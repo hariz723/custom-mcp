@@ -1,0 +1,35 @@
+services:
+  playwright-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: playwright-custom-mcp
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    ipc: host # Prevents Chromium memory exhaustion on large pages
+    volumes:
+      - ./output:/app/output
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - MCP_SERVER_NAME=custom-playwright
+      - MCP_TRANSPORT=streamable-http
+      - HOST=0.0.0.0
+      - PORT=8000
+      - HEADLESS=true
+      - VIEWPORT_WIDTH=1280
+      - VIEWPORT_HEIGHT=720
+      - DEFAULT_TIMEOUT_MS=30000
+      - OUTPUT_DIR=/app/output
+      # LLM Provider Configuration (set your key in .env or environment)
+      - LLM_MODEL=${LLM_MODEL:-gemini/gemini-2.5-flash}
+      - LLM_TEMPERATURE=${LLM_TEMPERATURE:-0.1}
+      - MAX_RETRIES=${MAX_RETRIES:-3}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_API_BASE=${OPENAI_API_BASE:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OLLAMA_API_BASE=${OLLAMA_API_BASE:-}
+      - LM_STUDIO_API_BASE=${LM_STUDIO_API_BASE:-}
